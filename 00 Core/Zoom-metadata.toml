@@ -2,7 +2,7 @@
 name = "Zoom"
 homepage = "https://www.nexusmods.com/morrowind/mods/53474"
 authors = [ "C3pa" ]
-version = "1.1.0"
+version = "1.2.0"
 
 [dependencies]
 assets = [ "Textures/zoom" ]

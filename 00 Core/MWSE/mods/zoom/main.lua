@@ -27,18 +27,21 @@ local function hold()
 		isShiftDown = IC:isShiftDown()
 	}
 
+	local zoom = mge.camera.zoom
 	if tes3.isKeyEqual({ actual = actual, expected = key }) then
-		if mge.camera.zoom < config.maxZoom then
+		if zoom < config.maxZoom then
 			fader:activate()
 			mge.camera.zoomIn({ amount = config.zoomStrength })
+			util.updateDistantLandConfig(zoom)
 		end
 		return
 	else
-		if mge.camera.zoom > util.noZoom then
+		if zoom > util.noZoom then
 			mge.camera.zoomOut({ amount = config.zoomStrength * 1.5 })
 		elseif math.isclose(mge.camera.zoom, util.noZoom) then
 			fader:deactivate()
 		end
+		util.updateDistantLandConfig(zoom)
 	end
 end
 
@@ -63,14 +66,16 @@ local function press(e)
 	if timePassed < cooldown then return end
 	lastPress = os.clock()
 
-	local zoomIn = (mge.camera.zoom == util.noZoom)
+	local zoom = mge.camera.zoom
+	local zoomIn = (zoom == util.noZoom)
 	if zoomIn then
 		fader:activate()
 		util.zoomIn()
-	else
-		fader:deactivate()
-		util.zoomOut()
+		return
 	end
+
+	fader:deactivate()
+	util.zoomOut()
 end
 
 ---@param e mouseWheelEventData
@@ -90,6 +95,7 @@ local function mouse(e)
 		mge.camera.zoomIn({
 			amount = config.zoomStrength * mult
 		})
+		util.updateDistantLandConfig(mge.camera.zoom)
 	else
 		if mge.camera.zoom == util.noZoom then
 			fader:deactivate()
@@ -97,6 +103,7 @@ local function mouse(e)
 		mge.camera.zoomOut({
 			amount = config.zoomStrength * mult
 		})
+		util.updateDistantLandConfig(mge.camera.zoom)
 	end
 end
 
@@ -116,9 +123,9 @@ end
 event.register(tes3.event.initialized, function()
 	-- BUG: camera's zoom level isn't changed if not
 	-- calling mge.macros.increaseZoom() before.
+	-- Maybe need to set mge.camera.zoomEnable = true ?
 	mge.macros.increaseZoom()
 	mge.macros.decreaseZoom()
-
 	IC = tes3.worldController.inputController
 	register()
 end)

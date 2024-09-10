@@ -18,6 +18,7 @@ local defaultConfig = {
 		mouseWheel = nil,
 	},
 	faderOn = false,
+	changeDrawDistance = false,
 }
 
 local cachedConfig = mwse.loadConfig(configFile, defaultConfig)

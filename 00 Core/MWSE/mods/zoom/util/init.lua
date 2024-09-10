@@ -6,6 +6,42 @@ local config = require("zoom.config").config
 ---|> "press"  # Zoom in when a button is pressed. Zoom out when the button is pressed again.
 ---|  "scroll" # Zoom on mouse scroll
 
+local distantConfig = {
+	default = {},
+	multiplier = {
+		drawDistance = 1.00,
+		aboveWaterFogEnd = 1.00,
+		aboveWaterFogStart = 0.60,
+		veryFarStaticEnd = 0.95,
+		farStaticEnd = 2 / 3,
+	},
+}
+
+event.register(tes3.event.initialized, function()
+	local dlcfg = mge.distantLandRenderConfig
+	distantConfig.default = {
+		drawDistance = dlcfg.drawDistance,
+		aboveWaterFogEnd = dlcfg.aboveWaterFogEnd,
+		aboveWaterFogStart = dlcfg.aboveWaterFogStart,
+		veryFarStaticEnd = dlcfg.veryFarStaticEnd,
+		farStaticEnd = dlcfg.farStaticEnd
+	}
+end)
+
+--- @param currentZoom number In range of [0 - 1]
+local function updateDistantLandConfig(currentZoom)
+	if not config.changeDrawDistance then return end
+	if distantConfig.default.drawDistance > 20 then return end
+
+	local zoomNormalized = (currentZoom - 1) / (config.maxZoom - 1)
+	local max = 4 * config.maxZoom
+	for setting, x in pairs(distantConfig.multiplier) do
+		local default = distantConfig.default[setting]
+		local r = math.lerp(default, max * x, zoomNormalized)
+		mge.distantLandRenderConfig[setting] = r
+	end
+end
+
 local noZoom = 1.0
 
 --- Starts a timer for zooming with given callback.
@@ -27,6 +63,7 @@ local function zoomIn()
 			return
 		end
 		mge.camera.zoomIn({ amount = config.zoomStrength })
+		updateDistantLandConfig(mge.camera.zoom)
 	end)
 end
 
@@ -39,6 +76,7 @@ local function zoomOut()
 			return
 		end
 		mge.camera.zoomOut({ amount = config.zoomStrength * 1.5 })
+		updateDistantLandConfig(mge.camera.zoom)
 	end)
 end
 
@@ -86,5 +124,6 @@ return {
 	zoomOut = zoomOut,
 	noZoom = noZoom,
 	unregisterIf = unregisterIf,
-	reduceFraction = irreducibleFraction
+	reduceFraction = irreducibleFraction,
+	updateDistantLandConfig = updateDistantLandConfig,
 }

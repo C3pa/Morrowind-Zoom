@@ -126,6 +126,13 @@ local function registerModConfig()
 	})
 
 	newline(page)
+	page:createOnOffButton({
+		label = i18n("mcm.changeDrawDistance.label"),
+		description = i18n("mcm.changeDrawDistance.description"),
+		variable = mwse.mcm.createTableVariable({ id = "changeDrawDistance", table = mcmConfig })
+	})
+
+	newline(page)
 	page:createDropdown({
 		label = i18n("mcm.logLevel.label"),
 		description = getDescription("logLevel"),

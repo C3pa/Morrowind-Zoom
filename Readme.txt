@@ -1,7 +1,7 @@
 				Zoom
 				By C3pa
 
-Version: 1.1
+Version: 1.2
 
 _________
 Contents
@@ -45,6 +45,8 @@ Initial Release
 Feature: Mod now allows binding combinations that include mouse buttons.
 Bugfix: Prevent zooming with the scroll wheel while holding toggle POV (TAB by default). In Vanilla, while holding
         the TAB key, the scroll wheel controls the camera.
+1.2
+Feature: Adjust the Draw Distance when zooming. This feature is disabled by default.
 
 ________
 Contact
