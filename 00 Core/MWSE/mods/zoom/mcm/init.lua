@@ -1,5 +1,6 @@
 local config = require("zoom.config")
 local log = require("logging.logger").getLogger("zoom") --[[@as mwseLogger]]
+local defaultDrawDistance = require("zoom.util").distantConfig.default.drawDistance
 
 local i18n = mwse.loadTranslations("zoom")
 local mcmConfig = config.getConfig()
@@ -130,6 +131,15 @@ local function registerModConfig()
 		label = i18n("mcm.changeDrawDistance.label"),
 		description = i18n("mcm.changeDrawDistance.description"),
 		variable = mwse.mcm.createTableVariable({ id = "changeDrawDistance", table = mcmConfig })
+	})
+
+	newline(page)
+	page:createSlider({
+		label = i18n("mcm.maxDrawDistance.label"),
+		description = i18n("mcm.maxDrawDistance.description"),
+		variable = mwse.mcm.createTableVariable({ id = "maxDrawDistance", table = mcmConfig }),
+		min = defaultDrawDistance,
+		max = 40,
 	})
 
 	newline(page)

@@ -19,11 +19,12 @@ local defaultConfig = {
 	},
 	faderOn = false,
 	changeDrawDistance = false,
+	maxDrawDistance = 20,
 }
 
 local cachedConfig = mwse.loadConfig(configFile, defaultConfig)
 local this = {
-	version = "1.1.0",
+	version = "1.2.1",
 	---@type zoomModConfigTable
 	config = {},
 	default = defaultConfig,

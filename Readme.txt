@@ -1,7 +1,7 @@
 				Zoom
 				By C3pa
 
-Version: 1.2
+Version: 1.2.1
 
 _________
 Contents
@@ -47,6 +47,8 @@ Bugfix: Prevent zooming with the scroll wheel while holding toggle POV (TAB by d
         the TAB key, the scroll wheel controls the camera.
 1.2
 Feature: Adjust the Draw Distance when zooming. This feature is disabled by default.
+1.2.1
+Feature: Made maximal Draw Distance customizable in the MCM.
 
 ________
 Contact

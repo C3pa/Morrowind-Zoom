@@ -50,6 +50,10 @@ return {
 			["label"] = "Change Draw Distance while zooming?",
 			["description"] = "\nIf enabled, when zooming, your Draw Distance, distant fog start and end, far static end and very far static end values will be increased to allow seeing farther.\n\nThis setting may impact performance!\n\nDefault: Off"
 		},
+		["maxDrawDistance"] = {
+			["label"] = "Maximum Draw Distance %%s cells.",
+			["description"] = "\nIf Change Draw Distance is enabled, this is the maximal Draw Distance at maximal zoom.\n\nThis setting may impact performance!\n\nDefault: 20"
+		},
 		["logLevel"] = {
 			["label"] = "Logging Level",
 			["description"] = "Set the log level. If you've found a bug in the mod, please backup your MWSE.log, set the logging level to Trace, and replicate the bug. When reporting the bug please attach both MWSE.log files.",

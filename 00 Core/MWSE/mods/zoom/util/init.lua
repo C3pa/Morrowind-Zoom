@@ -31,10 +31,11 @@ end)
 --- @param currentZoom number In range of [0 - 1]
 local function updateDistantLandConfig(currentZoom)
 	if not config.changeDrawDistance then return end
-	if distantConfig.default.drawDistance > 20 then return end
+	local max = config.maxDrawDistance
+	if distantConfig.default.drawDistance >= max then return end
 
 	local zoomNormalized = (currentZoom - 1) / (config.maxZoom - 1)
-	local max = 4 * config.maxZoom
+
 	for setting, x in pairs(distantConfig.multiplier) do
 		local default = distantConfig.default[setting]
 		local r = math.lerp(default, max * x, zoomNormalized)
@@ -126,4 +127,5 @@ return {
 	unregisterIf = unregisterIf,
 	reduceFraction = irreducibleFraction,
 	updateDistantLandConfig = updateDistantLandConfig,
+	distantConfig = distantConfig,
 }
