@@ -1,7 +1,7 @@
 				Zoom
 				By C3pa
 
-Version: 1.0
+Version: 1.1
 
 _________
 Contents
@@ -24,9 +24,9 @@ ____________
 Description
 ____________
 
-This mod allow you to zoom in. You can configure mod's behaviour in the Mod Configuration Menu. You can adjust maximal zoom,
-zooming speed, and zoom key. You can zoom either by pressing a button (toggle functionality), by holding a button, or using
-mouse scroll. You can select between these zoom modes in the MCM. In addition, you can optionally turn on spyglass overlay
+This mod allows you to zoom in. You can configure the mod's behavior in the Mod Configuration Menu. You can adjust maximal zoom,
+zooming speed, and zoom key. You can zoom either by pressing a button (toggle functionality), by holding a button, or by using
+the mouse scroll. You can select between these zoom modes in the MCM. In addition, you can optionally turn on the spyglass overlay
 which is shown during zooming.
 
 ____________
@@ -41,6 +41,10 @@ Changelog
 ____________
 1.0
 Initial Release
+1.1
+Feature: Mod now allows binding combinations that include mouse buttons.
+Bugfix: Prevent zooming with the scroll wheel while holding toggle POV (TAB by default). In Vanilla, while holding
+        the TAB key, the scroll wheel controls the camera.
 
 ________
 Contact

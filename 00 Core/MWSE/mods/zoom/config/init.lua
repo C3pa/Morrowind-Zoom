@@ -8,18 +8,21 @@ local defaultConfig = {
 	zoomType = "press",
 	maxZoom = 2.0,
 	zoomStrength = 0.06,
+	--- @type mwseKeyMouseCombo
 	zoomKey = {
 		keyCode = tes3.scanCode.i,
 		isAltDown = false,
 		isShiftDown = false,
 		isControlDown = false,
+		mouseButton = nil,
+		mouseWheel = nil,
 	},
 	faderOn = false,
 }
 
 local cachedConfig = mwse.loadConfig(configFile, defaultConfig)
 local this = {
-	version = "1.0.0",
+	version = "1.1.0",
 	---@type zoomModConfigTable
 	config = {},
 	default = defaultConfig,

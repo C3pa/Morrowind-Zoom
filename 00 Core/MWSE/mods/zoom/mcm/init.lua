@@ -87,10 +87,10 @@ local function registerModConfig()
 		label = i18n("mcm.zoomKey.label"),
 		description = getDescription("zoomKey", "I"),
 		allowCombinations = true,
+		allowMouse = true,
 		variable = mwse.mcm.createTableVariable({
 			id = "zoomKey",
 			table = mcmConfig,
-			restartRequired = true
 		}),
 	})
 

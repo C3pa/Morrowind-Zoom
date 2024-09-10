@@ -65,10 +65,26 @@ local function unregisterIf(eventId, callback, options)
 	end
 end
 
+-- Euclidean algorithm
+local function gcd(a, b)
+	while b ~= 0 do
+		local c = b
+		b = a % b
+		a = c
+	end
+	return a
+end
+
+local function irreducibleFraction(a, b)
+	local gcd = gcd(a, b)
+	return a / gcd, b / gcd
+end
+
 return {
 	keyModifiersEqual = keyModifiersEqual,
 	zoomIn = zoomIn,
 	zoomOut = zoomOut,
 	noZoom = noZoom,
 	unregisterIf = unregisterIf,
+	reduceFraction = irreducibleFraction
 }

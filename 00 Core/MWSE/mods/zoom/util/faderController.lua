@@ -1,5 +1,6 @@
 local log = require("logging.logger").getLogger("zoom") --[[@as mwseLogger]]
 local config = require("zoom.config").config
+local util = require("zoom.util")
 
 ---@alias zoomFaderState
 ---|> "inactive"
@@ -15,11 +16,29 @@ local config = require("zoom.config").config
 ---@field state zoomFaderState
 local faderController = {}
 
+local textures = {
+	["16:9"] = "textures\\zoom\\spyglass_16_9.tga",
+	["16:10"] = "textures\\zoom\\spyglass_16_10.tga",
+	["4:3"] = "textures\\zoom\\spyglass_4_3.tga",
+	["5:4"] = "textures\\zoom\\spyglass_5_4.tga",
+}
+
+local function getTexture()
+	return "textures\\zoom\\spyglass.tga"
+--[[
+	local w, h = tes3.getViewportSize()
+	w, h = util.reduceFraction(w, h)
+	local ratio = string.format("%s:%s", w, h)
+	return textures[ratio] or textures["16:9"]
+---]]
+end
+
+
 ---@return zoomFaderController
 function faderController:new()
 	local o = {
 		stateTimer = nil,
-		faderTexture = "textures\\zoom\\spyglass.tga",
+		faderTexture = getTexture(),
 		fadeTime = 1.0,
 		fader = nil,
 		state = "inactive",

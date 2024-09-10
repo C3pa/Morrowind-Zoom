@@ -12,20 +12,22 @@ local util = require("zoom.util")
 dofile("zoom.mcm")
 
 local fader = faderController:new()
+--- @type tes3inputController
+local IC
 
 local function hold()
 	if tes3.menuMode() then	return end
-
-	local IC = tes3.worldController.inputController
-	local keyDown = IC:isKeyDown(config.zoomKey.keyCode)
-	local e = {
-		isAltDown = IC:isKeyDown(tes3.scanCode.lAlt) or IC:isKeyDown(tes3.scanCode.rAlt),
-		isControlDown = IC:isKeyDown(tes3.scanCode.lCtrl) or IC:isKeyDown(tes3.scanCode.rCtrl),
-		isShiftDown = IC:isKeyDown(tes3.scanCode.lShift) or IC:isKeyDown(tes3.scanCode.rShift)
+	local key = config.zoomKey
+	---@type mwseKeyMouseCombo
+	local actual = {
+		keyCode = IC:isKeyDown(key.keyCode) and key.keyCode,
+		mouseButton = IC:isMouseButtonDown(key.mouseButton) and key.mouseButton,
+		isAltDown = IC:isAltDown(),
+		isControlDown = IC:isControlDown(),
+		isShiftDown = IC:isShiftDown()
 	}
-	local keyComboDown = keyDown and util.keyModifiersEqual(e, config.zoomKey)
 
-	if keyComboDown then
+	if tes3.isKeyEqual({ actual = actual, expected = key }) then
 		if mge.camera.zoom < config.maxZoom then
 			fader:activate()
 			mge.camera.zoomIn({ amount = config.zoomStrength })
@@ -43,12 +45,19 @@ end
 local lastPress = os.clock()
 local cooldown = fader.fadeTime + 0.01
 
----@param e keyDownEventData
+---@param e keyDownEventData|mouseButtonDownEventData|mouseWheelEventData
 local function press(e)
-	if tes3.menuMode()
-	or not util.keyModifiersEqual(e, config.zoomKey) then
-		return
-	end
+	if tes3.menuMode() then return end
+	---@type mwseKeyMouseCombo
+	local actual = {
+		keyCode = e.keyCode,
+		mouseButton = e.button,
+		delta = e.delta,
+		isAltDown = IC:isAltDown(),
+		isShiftDown = IC:isShiftDown(),
+		isControlDown = IC:isControlDown()
+	}
+	if not tes3.isKeyEqual({ actual = actual, expected = config.zoomKey }) then	return end
 
 	local timePassed = os.clock() - lastPress
 	if timePassed < cooldown then return end
@@ -67,6 +76,8 @@ end
 ---@param e mouseWheelEventData
 local function mouse(e)
 	if tes3.menuMode()
+	or IC:keybindTest(tes3.keybind.togglePOV)
+	or tes3.getVanityMode()
 	or not util.keyModifiersEqual(e, config.zoomKey) then
 		return
 	end
@@ -93,7 +104,9 @@ local function register()
 	if config.zoomType == "hold" then
 		event.register(tes3.event.simulate, hold)
 	elseif config.zoomType == "press" then
-		event.register(tes3.event.keyDown, press, { filter = config.zoomKey.keyCode })
+		event.register(tes3.event.keyDown, press)
+		event.register(tes3.event.mouseButtonDown, press)
+		event.register(tes3.event.mouseWheel, press)
 	elseif config.zoomType == "scroll" then
 		event.register(tes3.event.mouseWheel, mouse)
 	end
@@ -105,5 +118,7 @@ event.register(tes3.event.initialized, function()
 	-- calling mge.macros.increaseZoom() before.
 	mge.macros.increaseZoom()
 	mge.macros.decreaseZoom()
+
+	IC = tes3.worldController.inputController
 	register()
 end)
