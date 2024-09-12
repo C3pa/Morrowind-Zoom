@@ -104,4 +104,13 @@ function faderController:deactivate()
 	})
 end
 
+function faderController:deactivateInstant()
+	self.state = "inactive"
+	if self.stateTimer then
+		self.stateTimer:cancel()
+		self.stateTimer = nil
+	end
+	self.fader:deactivate()
+end
+
 return faderController

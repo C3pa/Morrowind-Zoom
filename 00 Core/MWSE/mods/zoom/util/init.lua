@@ -6,44 +6,80 @@ local config = require("zoom.config").config
 ---|> "press"  # Zoom in when a button is pressed. Zoom out when the button is pressed again.
 ---|  "scroll" # Zoom on mouse scroll
 
-local distantConfig = {
-	default = {},
-	multiplier = {
-		drawDistance = 1.00,
-		aboveWaterFogEnd = 1.00,
-		aboveWaterFogStart = 0.60,
-		veryFarStaticEnd = 0.95,
-		farStaticEnd = 2 / 3,
-	},
+-- The zoom level when there is no zooming
+local noZoom = 1.0
+
+local settings = {
+	sensitivity = {},
+	-- Distant land
+	dl = {
+		default = {},
+		multiplier = {
+			drawDistance = 1.00,
+			aboveWaterFogEnd = 1.00,
+			aboveWaterFogStart = 0.60,
+			veryFarStaticEnd = 0.95,
+			farStaticEnd = 2 / 3,
+		},
+	}
 }
 
-event.register(tes3.event.initialized, function()
+local menuControlsID = "MenuCtrls"
+
+local function saveMouseSensitivity()
+	settings.sensitivity.x = tes3.worldController.mouseSensitivityX
+	settings.sensitivity.y = tes3.worldController.mouseSensitivityY
+end
+
+local function saveDistantLandConfig()
 	local dlcfg = mge.distantLandRenderConfig
-	distantConfig.default = {
+	settings.dl.default = {
 		drawDistance = dlcfg.drawDistance,
 		aboveWaterFogEnd = dlcfg.aboveWaterFogEnd,
 		aboveWaterFogStart = dlcfg.aboveWaterFogStart,
 		veryFarStaticEnd = dlcfg.veryFarStaticEnd,
 		farStaticEnd = dlcfg.farStaticEnd
 	}
+end
+
+event.register(tes3.event.uiActivated, function(e)
+	e.element:registerAfter(tes3.uiEvent.destroy, saveMouseSensitivity)
+end, { filter = menuControlsID })
+
+event.register(tes3.event.initialized, function()
+	saveDistantLandConfig()
+	saveMouseSensitivity()
 end)
 
---- @param currentZoom number In range of [0 - 1]
+event.register("Zoom:MGEXE-options", function ()
+	saveDistantLandConfig()
+end)
+
+local function getDefaultDrawDistance()
+	return settings.dl.default.drawDistance
+end
+
+local function undoMouseSensitivityScale()
+	tes3.worldController.mouseSensitivityX = settings.sensitivity.x * mge.camera.zoom
+	tes3.worldController.mouseSensitivityY = settings.sensitivity.y * mge.camera.zoom
+end
+
+--- @param currentZoom number
 local function updateDistantLandConfig(currentZoom)
 	if not config.changeDrawDistance then return end
-	local max = config.maxDrawDistance
-	if distantConfig.default.drawDistance >= max then return end
+	local max = config.maxDrawDistance + settings.dl.default.drawDistance
+	if settings.dl.default.drawDistance >= max then return end
 
 	local zoomNormalized = (currentZoom - 1) / (config.maxZoom - 1)
 
-	for setting, x in pairs(distantConfig.multiplier) do
-		local default = distantConfig.default[setting]
+	for setting, x in pairs(settings.dl.multiplier) do
+		local default = settings.dl.default[setting]
 		local r = math.lerp(default, max * x, zoomNormalized)
 		mge.distantLandRenderConfig[setting] = r
 	end
-end
 
-local noZoom = 1.0
+	-- undoMouseSensitivityScale()
+end
 
 --- Starts a timer for zooming with given callback.
 ---@param callback fun(e: mwseTimerCallbackData)
@@ -119,6 +155,59 @@ local function irreducibleFraction(a, b)
 	return a / gcd, b / gcd
 end
 
+local data = {
+	telescopeRequired = false,
+	---@type table<string, Zoom.telescopeData>
+	telescopes = {}
+}
+
+--- @class Zoom.telescopeData
+--- @field id string
+
+--- @param telescopeData Zoom.telescopeData
+local function registerTelescope(telescopeData)
+	local id = string.lower(telescopeData.id)
+	-- Check if we have it registered already
+	for _, telescope in ipairs(data.telescopes) do
+		if telescope.id == id then
+			log:warn("Attempting to register already registered telescope %q. Traceback: %s",
+				telescopeData.id, debug.traceback())
+			return
+		end
+	end
+	data.telescopes[id] = table.copy(telescopeData)
+end
+
+--- @param telescopesData Zoom.telescopeData[]
+local function registerTelescopes(telescopesData)
+	assert(type(telescopesData) == "table", "telescopesData needs to be an array")
+	for _, telescope in ipairs(telescopesData) do
+		registerTelescope(telescope)
+	end
+end
+
+--- @param required boolean
+local function setTelescopeRequired(required)
+	data.telescopeRequired = required
+end
+
+local function getTelescopeRequired()
+	return data.telescopeRequired
+end
+
+local function hasTelescope()
+	if not data.telescopeRequired then
+		return true
+	end
+	for _, stack in ipairs(tes3.mobilePlayer.inventory) do
+		local id = string.lower(stack.object.id)
+		if data.telescopes[id] then
+			return true
+		end
+	end
+	return false
+end
+
 return {
 	keyModifiersEqual = keyModifiersEqual,
 	zoomIn = zoomIn,
@@ -127,5 +216,10 @@ return {
 	unregisterIf = unregisterIf,
 	reduceFraction = irreducibleFraction,
 	updateDistantLandConfig = updateDistantLandConfig,
-	distantConfig = distantConfig,
+	getDefaultDrawDistance = getDefaultDrawDistance,
+	hasTelescope = hasTelescope,
+	getTelescopeRequired = getTelescopeRequired,
+	setTelescopeRequired = setTelescopeRequired,
+	registerTelescope = registerTelescope,
+	registerTelescopes = registerTelescopes,
 }

@@ -1,6 +1,6 @@
 local config = require("zoom.config")
 local log = require("logging.logger").getLogger("zoom") --[[@as mwseLogger]]
-local defaultDrawDistance = require("zoom.util").distantConfig.default.drawDistance
+local getDrawDistance = require("zoom.util").getDefaultDrawDistance
 
 local i18n = mwse.loadTranslations("zoom")
 local mcmConfig = config.getConfig()
@@ -138,7 +138,7 @@ local function registerModConfig()
 		label = i18n("mcm.maxDrawDistance.label"),
 		description = i18n("mcm.maxDrawDistance.description"),
 		variable = mwse.mcm.createTableVariable({ id = "maxDrawDistance", table = mcmConfig }),
-		min = defaultDrawDistance,
+		min = getDrawDistance(),
 		max = 40,
 	})
 
