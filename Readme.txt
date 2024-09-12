@@ -1,7 +1,7 @@
 				Zoom
 				By C3pa
 
-Version: 1.2.1
+Version: 1.3.0
 
 _________
 Contents
@@ -29,6 +29,13 @@ zooming speed, and zoom key. You can zoom either by pressing a button (toggle fu
 the mouse scroll. You can select between these zoom modes in the MCM. In addition, you can optionally turn on the spyglass overlay
 which is shown during zooming.
 
+Modules description:
+00 Core - Core Zoom mod.
+01 Spyglass Items Required - With this module, the player needs to have a Spyglass item in inventory to be able to activate zoom.
+                             It works with "Spyglass" item from Tamriel Data (and any mod using it such as Tamriel Rebuilt), and
+                             Spyglass items from An Addendum to Tamrielic Lore Data (AATL Data)
+02 AATL Data Spyglass Distributed - Adds Spyglass items from AATL Data to some traders and leveled lists. Goes hand in hand with module 01.
+
 ____________
 Permissions
 ____________
@@ -49,6 +56,8 @@ Bugfix: Prevent zooming with the scroll wheel while holding toggle POV (TAB by d
 Feature: Adjust the Draw Distance when zooming. This feature is disabled by default.
 1.2.1
 Feature: Made maximal Draw Distance customizable in the MCM.
+1.3.0
+Feature: Added a module that requires the player to have a spyglass item in inventory to zoom.
 
 ________
 Contact
