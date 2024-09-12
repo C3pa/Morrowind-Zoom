@@ -24,7 +24,7 @@ local defaultConfig = {
 
 local cachedConfig = mwse.loadConfig(configFile, defaultConfig)
 local this = {
-	version = "1.3.0",
+	version = "1.4.0",
 	---@type zoomModConfigTable
 	config = {},
 	default = defaultConfig,

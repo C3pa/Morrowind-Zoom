@@ -1,7 +1,7 @@
 				Zoom
 				By C3pa
 
-Version: 1.3.0
+Version: 1.4.0
 
 _________
 Contents
@@ -35,6 +35,7 @@ Modules description:
                              It works with "Spyglass" item from Tamriel Data (and any mod using it such as Tamriel Rebuilt), and
                              Spyglass items from An Addendum to Tamrielic Lore Data (AATL Data)
 02 AATL Data Spyglass Distributed - Adds Spyglass items from AATL Data to some traders and leveled lists. Goes hand in hand with module 01.
+03 Hi-Res Overlay Texture - A more detailed overlay used when zoomed in. All the credits go to Fluffalicious for this one!
 
 ____________
 Permissions
@@ -60,6 +61,8 @@ Feature: Made maximal Draw Distance customizable in the MCM.
 Feature: Added a module that requires the player to have a spyglass item in inventory to zoom.
 Bugfix: Before, if you were in zoomed in state while loading a savegame, you would be in zoomed in state. Now zoom state is reset to no zoom when loading a new game.
 Bugfix: Now changing Draw distance in the in-game MGE XE options menu works correctly.
+1.4.0
+Feature: Added a Hi-Res version of overlay texture made by Fluffalicious.
 
 ________
 Contact
