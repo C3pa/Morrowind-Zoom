@@ -58,6 +58,8 @@ Feature: Adjust the Draw Distance when zooming. This feature is disabled by defa
 Feature: Made maximal Draw Distance customizable in the MCM.
 1.3.0
 Feature: Added a module that requires the player to have a spyglass item in inventory to zoom.
+Bugfix: Before, if you were in zoomed in state while loading a savegame, you would be in zoomed in state. Now zoom state is reset to no zoom when loading a new game.
+Bugfix: Now changing Draw distance in the in-game MGE XE options menu works correctly.
 
 ________
 Contact
